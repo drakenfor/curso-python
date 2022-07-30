@@ -66,4 +66,7 @@ def physical_parameters(
         }
     }
 
+    print("Hola mundo")
+    
+
 
