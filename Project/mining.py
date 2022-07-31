@@ -114,7 +114,7 @@ def physical_parameters(
         }
     }
 
-    print("Hola mundo")
 
 
-
+def suma_cuadrado(a, b):
+    return a**2 + b**2
