@@ -1,6 +1,6 @@
 
 import math
-# Physical developemnt parameters
+# Physical development parameters
 def physical_parameters(
             bench_width: float,
             bench_large: float,
@@ -28,7 +28,7 @@ def physical_parameters(
 
         ):
 
-    # Physical devopment parameters
+    # Physical development parameters
     volumen = bench_heigth * bench_large * bench_width
     metric_tons = rock_density * volumen
     total_hole_depth = hole_depth * (1 + subdrilling/100)
