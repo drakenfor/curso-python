@@ -2,6 +2,7 @@ from multiprocessing.context import SpawnContext
 import re
 from tkinter import *
 from tkinter import ttk
+from turtle import width
 
 
 # Eliminar letras
@@ -250,7 +251,7 @@ for i, fields in enumerate(entries_drill):
                 validatecommand=(root.register(validator), "%S", "%s", "%d", "%P"),
                 width=20
             ).grid(row=j + 2, column=1, sticky='nw')
-        ttk.Label(iFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=5, sticky='nw')
+        ttk.Label(iFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=3, sticky='nw')
 
         it += 1
 
@@ -300,7 +301,7 @@ for i, out in enumerate(outs_drill):
     for j, text in enumerate(out[1]):
         globals().update({text[1]: StringVar()})
         ttk.Label(iFrames[i], text=f'{text[0]}: ').grid(row=j + 2, column=3, sticky='nw', padx=10)
-        ttk.Label(iFrames[i], textvariable=globals().get(text[1]), justify=RIGHT).grid(row= j + 2, column=4, sticky='nw', padx=10)
+        ttk.Label(iFrames[i], textvariable=globals().get(text[1]), justify=RIGHT).grid( row= j + 2, column=4, sticky='nw', padx=10)
 
 
 ######### Tab-End: production-drill#########
@@ -381,7 +382,7 @@ for i, fields in enumerate(entries_shovel):
                 validatecommand=(root.register(validator), "%S", "%s", "%d", "%P"),
                 width=20
             ).grid(row=j + 2, column=1, sticky='nw')
-        ttk.Label(sFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=5, sticky='nw')
+        ttk.Label(sFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=3, sticky='nw')
 
         it += 1
 
@@ -497,7 +498,7 @@ for i, fields in enumerate(entries_truck):
                 validatecommand=(root.register(validator), "%S", "%s", "%d", "%P"),
                 width=20
             ).grid(row=j + 2, column=1, sticky='nw')
-        ttk.Label(tFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=5, sticky='nw')
+        ttk.Label(tFrames[i], text=field[0] + ': ').grid(row=j + 2, column=0, padx=5, pady=3, sticky='nw')
 
         it += 1
 
