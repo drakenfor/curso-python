@@ -306,6 +306,7 @@ entries_truck = [
         'Otros inputs', [
             ['Input1', 'name_var10'],
             ['Input2', 'name_var11'],
+            ['input 3', 'name_4']
         ]
     ]
 ]
