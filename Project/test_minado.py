@@ -1,3 +1,4 @@
+from multiprocessing.context import SpawnContext
 import re
 from tkinter import *
 from tkinter import ttk
@@ -61,27 +62,44 @@ entries_drill = [
         'Physical Development parameters', [
             ['Bench Area (m)', 'bench_area'],
             ['Bench Height (m)', 'bench_height'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 'name_var4'],
-            ['Space, (m)', 'name_var5'],
-            ['Hole depth, (m)', 'name_var6'],
-            ['Sub-drilling, %', 'name_var7'],
+            ['Rock density (t/m3)', 'rock_density'],
+            ['Burden (m)', 'burden'],
+            ['Space, (m)', 'space'],
+            ['Hole depth, (m)', 'hole_depth'],
+            ['Sub-drilling, (%)', 'sub_drilling'],
         ]
     ],
     [
         'Production drill cycle time', [
-            ['Tramming speed, k/h', 'name_var8'],
-            ['Average distance between bench, km', 'name_var9'],
+            ['Tramming speed, (km/h)', 'tramming_speed'],
+            ['Average distance between bench, km', 'average_distance_between_bench'],
+            ['Setup time (min)', 'setup_time'],
+            ['Instantaneous penetration rate 9 7/8" holes (m/min)', 'instantaneous_penetration_rate_holes'],
+            ['Setup time per hole drilled (min)', 'setup_time_per_hole_drilled'],
         ]
     ],
     [
-        'Otros inputs', [
-            ['Input1', 'name_var10'],
-            ['Input2', 'name_var11'],
+        'Production drill performance', [
+            ['Days per year', 'days_per_year'],
+            ['Days worked per week', 'days_worked_per_week'],
+            ['Shifts per day', 'shifts_per_day'],
+            ['Shift lenght (h)', 'shift_lenght'],
+            ['Shift change (h)', 'shift_change'],
+            ['No bench available (h)', 'no_bench_available'],
+            ['No power (h)', 'no_power'],
+            ['Meetings (h)', 'meetings'],
+            ['Pump-water problems (h)', 'pump_water_problems'],
+            ['Maintenance - breakdown (h)', 'maintenance_breakdown']
         ]
-    ]
+    ],
+    [
+        'PRODUCCIÓN MINA ', [
+            ['Production 2016', 'production_2016'],
+            ['Production 2017', 'production_2017'],
+        ]
+    ],
 ]
-
+import math
 # Function for calc
 def drill_calc(*args):
     # validator_sv(*args)
@@ -93,6 +111,110 @@ def drill_calc(*args):
     except:
         print('Error on volume')
 
+    try:
+        metric_tons.set(round(float(volumen.get())*float(rock_density.get()), 2))
+    except:
+        print('Error on metric tons')
+    try:
+        total_hole_depth.set(round(float(hole_depth.get())+(float(sub_drilling.get())*float(hole_depth.get()))/100,2))
+    except:
+        print('Error on hole depth')
+    try:
+        number_of_production_holes.set(math.ceil(float(volumen.get())/(float(burden.get())*float(space.get())*float(hole_depth.get()))))
+    except:
+        print('Error on number of production holes')
+    try:
+        diameter_holes_meters_drilled.set(round(float(number_of_production_holes.get())*float(total_hole_depth.get()),2))
+    except:
+        print('Error on diameter holes meters drilled')
+    try:
+        tramming_time.set(round((float(average_distance_between_bench.get())/float(tramming_speed.get())*60),2))
+    except:
+        print('Error on tramming time ')
+    try:
+        total_setup_time.set(round(float(tramming_time.get())+float(setup_time.get()),2))
+    except:
+        print('Error on total setup time')
+    try:
+        setup_time_per_cut.set(round(float(total_setup_time.get())/60,1))
+    except:    
+        print('Error on setup time per cut')
+    try:
+        meters_drilled_holes.set(round(float(diameter_holes_meters_drilled.get()),2))
+    except:
+        print('Error on meters drilled_holes')
+    try:
+        drilling_time_holes.set(round(float(meters_drilled_holes.get())/float(instantaneous_penetration_rate_holes.get()),1))
+    except:
+        print('Error on drilling time_holes')
+    try:
+        total_drilling_time.set(round(float(drilling_time_holes.get())/60,1))
+    except:
+        print('Error on total drilling_time')
+    try:
+        holes_drilled.set(round(float(number_of_production_holes.get()),2))
+    except:
+        print('Error on holes drilled')
+    try:
+        total_set_up_time.set(round(float(holes_drilled.get())*float(setup_time_per_hole_drilled.get()),2))
+    except:
+        print('Error on total set up time')
+    try:
+        total_set_up_time_h.set(round(float(total_set_up_time.get())/60,2))
+    except:
+        print('Error on total set up time h')
+    try:
+        total_set_up_and_drill_time.set(round(float(total_drilling_time.get())+float(total_set_up_time_h.get()),1))
+    except:
+        print('Error on total set up and drill time')
+    try:
+        total_time_per_face.set(round(float(total_set_up_and_drill_time.get())+float(setup_time_per_cut.get()),1))
+    except:
+        print('Error on total time per face')
+    try:
+        days_worked_per_month.set(round(float(days_per_year.get()/12),1))
+    except:
+        print('Error on Days worked per month')
+    try:
+        total_delays.set(round(float(shift_change.get())+float(no_bench_available.get())+float(no_power.get())+float(meetings.get())+ float(pump_water_problems.get())+float(maintenance_breakdown.get()),2))
+    except:
+        print('Error on total delays')
+    try:
+        balance_of_shift_available.set(round(float(shift_lenght.get())-float(total_delays.get()),2))
+    except:   
+        print('Error on balance of shift available')
+    try:
+        rows_drilled_out.set(round(float(balance_of_shift_available.get())/float(total_time_per_face.get()),2))
+    except:   
+        print('Error on rows drilled out')
+    try:
+        meters_drilled_per_shift.set(round(float(diameter_holes_meters_drilled.get())*float(rows_drilled_out.get()),2))
+    except:   
+        print('Error on meters drilled per shift')
+    try:
+        meters_drilled_per_working_day.set(round(float(meters_drilled_per_shift.get())*float(shifts_per_day.get()),2))
+    except:   
+        print('Error on Meters drilled per working day')
+    try:
+        meters_drilled_per_month.set(round(float(meters_drilled_per_working_day.get())*float(days_worked_per_month.get()),2))
+    except:   
+        print('Error on Meters drilled per month')
+    try:
+        metrics_tons_per_shift.set(round(float(metric_tons.get())*float(rows_drilled_out.get()),2))
+    except:   
+        print('Error on Metrics tons per shift')
+    try:
+        metrics_tons_per_working_day.set(round(float(metrics_tons_per_shift.get())*float(shifts_per_day.get()),2))
+    except:   
+        print('Error on Metrics tons per working day')
+    try:
+        metrics_tons_per_month.set(round(float(metrics_tons_per_working_day.get())*float(days_worked_per_month.get()),2))
+    except:   
+        print('Error on Metrics tons per month')
+    
+
+
+    
 
 iFrames = []
 variables_drill = []
@@ -137,22 +259,39 @@ outs_drill = [
     [
         'Part 1', [
             ['Volume (m3)', 'volumen'],
-            ['Bench Height (m)', 'name_var2'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 0],
+            ['Metric tons (tn)', 'metric_tons'],
+            ['Total hole depth (m)', 'total_hole_depth'],
+            ['Number of production holes', 'number_of_production_holes'],
+            ['9 7/8" diameter holes, meters drilled (m)','diameter_holes_meters_drilled'],
         ],
     ],
     [
         'Part 2', [
-            ['Space, (m)', 'name_var4'],
-            ['Hole depth, (m)', 'name_var5'],
-            ['Sub-drilling, %', 'name_var6'],
+            ['Tramming time (min)', 'tramming_time'],
+            ['Total setup time (min)', 'total_setup_time'],
+            ['Setup time (=engine hours) per cut (h)', 'setup_time_per_cut'],
+            ['Meters drilled 9 7/8" holes (m)', 'meters_drilled_holes'],
+            ['Drilling time 9 7/8" holes (min)', 'drilling_time_holes'],
+            ['Total drilling time (h)', 'total_drilling_time'],
+            ['Holes drilled ', 'holes_drilled'],
+            ['Total set_up time (min)', 'total_set_up_time'],
+            ['Total set_up time (h)', 'total_set_up_time_h'],
+            ['Total set_up and drill time (h)', 'total_set_up_and_drill_time'],
+            ['Total time per face (h)', 'total_time_per_face'],
         ]
     ],
     [
-        'Output 3', [
-            ['otro ', 'name_var7'],
-            ['otro 2 s', 'name_var8']
+        'Part 3', [
+            ['Days worked per month  ', 'days_worked_per_month'],
+            ['Total delays (h)', 'total_delays'],
+            ['Balance of shift available (h)', 'balance_of_shift_available'],
+            ['Rows drilled out', 'rows_drilled_out'],
+            ['Meters drilled per shift (m)', 'meters_drilled_per_shift'],
+            ['Meters drilled per working day (m)', 'meters_drilled_per_working_day'],
+            ['Meters drilled per month (m)', 'meters_drilled_per_month'],
+            ['Metrics tons per shift (t)', 'metrics_tons_per_shift'],
+            ['Metrics tons per working day (t)', 'metrics_tons_per_working_day'],
+            ['Metrics tons per month (t)', 'metrics_tons_per_month'],
         ]
     ]
 ]
