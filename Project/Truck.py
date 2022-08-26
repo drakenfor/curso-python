@@ -18,8 +18,6 @@ def physical_parameters(
             breakdowns_unplanned_maintenance: float,
             job_or_efficiency_factor: float,
             shovel_average_pay_load: float,
-
-
         ):
     # Physical development parameters
     # Parameter
