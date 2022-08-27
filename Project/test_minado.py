@@ -172,8 +172,9 @@ def drill_calc(*args):
         total_time_per_face.set(round(float(total_set_up_and_drill_time.get())+float(setup_time_per_cut.get()),1))
     except:
         print('Error on total time per face')
+
     try:
-        days_worked_per_month.set(round(float(days_per_year.get())/12),1)
+        days_worked_per_month.set(round(float(days_per_year.get())/12, 1))
     except:
         print('Error on days worked per month')
     try:
@@ -344,11 +345,11 @@ entries_shovel = [
     ],
     [
         'Shovel Performance', [
-            ['Days per year', 'days_per_year'],
-            ['Days worked per week', 'days_worked_per_week'],
-            ['Shift per day', 'shift_per_day'],
+            ['Days per year', 's_days_per_year'],
+            ['Days worked per week', 's_days_worked_per_week'],
+            ['Shift per day', 's_shift_per_day'],
             ['Fuel up safety meeting (h)', 'fuel_up_safety_meeting'],
-            ['Shift change (h)', 'shift_change'],
+            ['Shift change (h)', 's_shift_change'],
             ['Inspect job (h)', 'inspect_job'],
             ['Breakdowns/unplanned maintenance (h)', 'breakdowns_unplanned_maintenance'],
             ['Job or efficiency factor (%)', 'job_or_efficiency_factor'],
@@ -391,31 +392,31 @@ def shovel_calc(*args):
     except:
         print('Error on cycle time')
     try:
-       days_worked_per_month.set(round(float(days_per_year.get())/12,2))
+       s_days_worked_per_month.set(round(float(s_days_per_year.get())/12,2))
     except:
         print('Error on days worked per month')
     try:
-       shift_length.set(24/float(shift_per_day.get()))
+       shift_length.set(24/float(s_shift_per_day.get()))
     except:
         print('Error on shift length')
     try:
-       planned_maintenance.set(round(8/float(days_worked_per_week.get())/float(shift_per_day.get()),1))
+       planned_maintenance.set(round(8/float(s_days_worked_per_week.get())/float(s_shift_per_day.get()),1))
     except:
         print('planned maintenance')
     try:
-       total_delays.set(round(float(fuel_up_safety_meeting.get())+float(shift_change.get())+float(planned_maintenance.get())+float(inspect_job.get())+float(breakdowns_unplanned_maintenance.get()),1))
+       s_total_delays.set(round(float(fuel_up_safety_meeting.get())+float(s_shift_change.get())+float(planned_maintenance.get())+float(inspect_job.get())+float(breakdowns_unplanned_maintenance.get()),1))
     except:
         print('total delays')
     try:
-       balance_of_shift_available.set(round(float(shift_length.get())-float(total_delays.get()),1))
+       s_balance_of_shift_available.set(round(float(shift_length.get())-float(s_total_delays.get()),1))
     except:
         print('total delays')
     try:
-       effective_hours_per_shift.set(round(float(balance_of_shift_available.get())*(float(job_or_efficiency_factor.get())/100),2))
+       effective_hours_per_shift.set(round(float(s_balance_of_shift_available.get())*(float(job_or_efficiency_factor.get())/100),2))
     except:
         print('effective hours per shift')
     try:
-       effective_hours_per_year.set(round(float(effective_hours_per_shift.get())*float(shift_per_day.get())*float(days_per_year.get()),2))
+       effective_hours_per_year.set(round(float(effective_hours_per_shift.get())*float(s_shift_per_day.get())*float(s_days_per_year.get()),2))
     except:
         print('effective hours per shift')   
     try:
@@ -427,7 +428,7 @@ def shovel_calc(*args):
     except:
         print('annual shovel production') 
     try:
-       day_shovel_production.set(round(float(annual_shovel_production.get())/float(days_per_year.get()),1))
+       day_shovel_production.set(round(float(annual_shovel_production.get())/float(s_days_per_year.get()),1))
     except:
         print('day_shovel_production')
     try:
@@ -494,11 +495,11 @@ outs_shovel = [
     ],
     [
         'Part 3', [
-            ['Days worked per month ', 'days_worked_per_month'],
+            ['Days worked per month ', 's_days_worked_per_month'],
             ['Shift length (h)', 'shift_length'],
             ['Planned maintenance (8h/week) ', 'planned_maintenance'],
-            ['Total delays (h)', 'total_delays'],
-            ['Balance of shift available (h) ', 'balance_of_shift_available'],
+            ['Total delays (h)', 's_total_delays'],
+            ['Balance of shift available (h) ', 's_balance_of_shift_available'],
             ['Effective hours per shift (h)', 'effective_hours_per_shift'],
             ['Effective hours per year (h) ', 'effective_hours_per_year'],
             ['Average pay load effective (t/h)', 'average_pay_load_effective'],
