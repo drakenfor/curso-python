@@ -73,7 +73,7 @@ entries_drill = [
     [
         'Production drill cycle time', [
             ['Tramming speed, (km/h)', 'tramming_speed'],
-            ['Average distance between bench, km', 'average_distance_between_bench'],
+            ['Average distance between bench, (km)', 'average_distance_between_bench'],
             ['Setup time (min)', 'setup_time'],
             ['Instantaneous penetration rate 9 7/8" holes (m/min)', 'instantaneous_penetration_rate_holes'],
             ['Setup time per hole drilled (min)', 'setup_time_per_hole_drilled'],
@@ -173,9 +173,9 @@ def drill_calc(*args):
     except:
         print('Error on total time per face')
     try:
-        days_worked_per_month.set(round(float(days_per_year.get()/12),1))
+        days_worked_per_month.set(round(float(days_per_year.get())/12),1)
     except:
-        print('Error on Days worked per month')
+        print('Error on days worked per month')
     try:
         total_delays.set(round(float(shift_change.get())+float(no_bench_available.get())+float(no_power.get())+float(meetings.get())+ float(pump_water_problems.get())+float(maintenance_breakdown.get()),2))
     except:
@@ -195,7 +195,7 @@ def drill_calc(*args):
     try:
         meters_drilled_per_working_day.set(round(float(meters_drilled_per_shift.get())*float(shifts_per_day.get()),2))
     except:   
-        print('Error on Meters drilled per working day')
+        print('Error on meters drilled per working day')
     try:
         meters_drilled_per_month.set(round(float(meters_drilled_per_working_day.get())*float(days_worked_per_month.get()),2))
     except:   
@@ -212,7 +212,14 @@ def drill_calc(*args):
         metrics_tons_per_month.set(round(float(metrics_tons_per_working_day.get())*float(days_worked_per_month.get()),2))
     except:   
         print('Error on Metrics tons per month')
-    
+    try:
+        units_of_production_drillers_2016.set(math.ceil(float(production_2016.get())/(float(metrics_tons_per_month.get())*12)))
+    except:   
+        print('Error on units of production drillers 2016')
+    try:
+        units_of_production_drillers_2017.set(math.ceil(float(production_2017.get())/(float(metrics_tons_per_month.get())*12)))
+    except:   
+        print('Error on units of production drillers 2017')
 
 
     
@@ -233,7 +240,7 @@ for i, fields in enumerate(entries_drill):
         iFrames[i],
         text=fields[0],
         font=('Arial', 12),
-    ).grid(row=0, column=0, pady=[20, 5], sticky='nw', columnspan=4)
+    ).grid(row=0, column=0, pady=[4, 4], sticky='nw', columnspan=4)
 
     sep = ttk.Separator(iFrames[i], orient=HORIZONTAL)
     sep.grid(row=1, column=0, sticky='ew', columnspan=4)
@@ -279,7 +286,7 @@ outs_drill = [
             ['Total set_up time (h)', 'total_set_up_time_h'],
             ['Total set_up and drill time (h)', 'total_set_up_and_drill_time'],
             ['Total time per face (h)', 'total_time_per_face'],
-        ]
+        ],
     ],
     [
         'Part 3', [
@@ -294,8 +301,15 @@ outs_drill = [
             ['Metrics tons per working day (t)', 'metrics_tons_per_working_day'],
             ['Metrics tons per month (t)', 'metrics_tons_per_month'],
         ]
+    ],
+    [
+        'Part 4', [
+            ['Mining equipment - Units of Production drillers (2016)', 'units_of_production_drillers_2016'],
+            ['Mining equipment - Units of production drillers (2017)', 'units_of_production_drillers_2017'],
+        ],
     ]
 ]
+
 
 for i, out in enumerate(outs_drill):
     for j, text in enumerate(out[1]):
@@ -312,27 +326,41 @@ notebook.add(shovel, text='Shovel')
 entries_shovel = [
     [
         'Physical Development parameters', [
-            ['Bench Area (m)', 'bench_area1'],
-            ['Bench Height (m)', 'bench_height1'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 'name_var4'],
-            ['Space, (m)', 'name_var5'],
-            ['Hole depth, (m)', 'name_var6'],
-            ['Sub-drilling, %', 'name_var7'],
+            ['Bucket capacity (m3)', 'bucket_capacity_m'],
+            ['In situ bulk density (t/m3)', 'in_situ_bulk_density'],
+            ['Swell (%)', 'swell'],
+            ['Fill factor (%)', 'fill_factor'],
         ]
     ],
     [
-        'Production drill cycle time', [
-            ['Tramming speed, k/h', 'name_var8'],
-            ['Average distance between bench, km', 'name_var9'],
+        'Shovel cycle time', [
+            ['Loading (s)', 'loading'],
+            ['Swing time (s)', 'swing_time'],
+            ['dump in truck (s)', 'dump_in_truck'],
+            ['Swing back (s)', 'swing_back'],
+            ['delays (s)', 'delays'],
+            ['Efficiency factor (%)', 'efficiency_factor'],
         ]
     ],
     [
-        'Otros inputs', [
-            ['Input1', 'name_var10'],
-            ['Input2', 'name_var11'],
+        'Shovel Performance', [
+            ['Days per year', 'days_per_year'],
+            ['Days worked per week', 'days_worked_per_week'],
+            ['Shift per day', 'shift_per_day'],
+            ['Fuel up safety meeting (h)', 'fuel_up_safety_meeting'],
+            ['Shift change (h)', 'shift_change'],
+            ['Inspect job (h)', 'inspect_job'],
+            ['Breakdowns/unplanned maintenance (h)', 'breakdowns_unplanned_maintenance'],
+            ['Job or efficiency factor (%)', 'job_or_efficiency_factor'],
+    
         ]
-    ]
+    ],
+    [
+        'PRODUCCIÓN MINA',[
+            ['Production 2016', 'production_2016'],
+            ['Production 2017', 'production_2017'],
+        ]
+    ],
 ]
 
 # Function for calc
@@ -343,10 +371,73 @@ def shovel_calc(*args):
     # Write code here
     # Volume
     try:
-        volumen1.set(round(float(bench_area1.get()) * float(bench_height1.get()), 2))
+        swell_bulk_density.set(round(float(in_situ_bulk_density.get()) /(1+float(swell.get())/100), 2))
     except:
-        print('Error on volume')
-
+        print('Error on sweell bulk density')
+    try:
+        bucket_capacity.set(round(float(swell_bulk_density.get())*(float(bucket_capacity_m.get())),1))
+    except:
+        print('Error on Bucket capacity')
+    try:
+        average_pay_load.set(round(float(bucket_capacity.get())*(float(fill_factor.get())/100),1))
+    except:
+        print('Error on Average pay load')
+    try:
+        total_cycle_time.set(round((float(loading.get())+float(swing_time.get())+float(dump_in_truck.get())+float(swing_back.get())+float(delays.get()))/60,2))
+    except:
+        print('Error on total cycle time')  
+    try:
+       cycle_time.set(round(float(total_cycle_time.get())/(float(efficiency_factor.get())/100),2))
+    except:
+        print('Error on cycle time')
+    try:
+       days_worked_per_month.set(round(float(days_per_year.get())/12,2))
+    except:
+        print('Error on days worked per month')
+    try:
+       shift_length.set(24/float(shift_per_day.get()))
+    except:
+        print('Error on shift length')
+    try:
+       planned_maintenance.set(round(8/float(days_worked_per_week.get())/float(shift_per_day.get()),1))
+    except:
+        print('planned maintenance')
+    try:
+       total_delays.set(round(float(fuel_up_safety_meeting.get())+float(shift_change.get())+float(planned_maintenance.get())+float(inspect_job.get())+float(breakdowns_unplanned_maintenance.get()),1))
+    except:
+        print('total delays')
+    try:
+       balance_of_shift_available.set(round(float(shift_length.get())-float(total_delays.get()),1))
+    except:
+        print('total delays')
+    try:
+       effective_hours_per_shift.set(round(float(balance_of_shift_available.get())*(float(job_or_efficiency_factor.get())/100),2))
+    except:
+        print('effective hours per shift')
+    try:
+       effective_hours_per_year.set(round(float(effective_hours_per_shift.get())*float(shift_per_day.get())*float(days_per_year.get()),2))
+    except:
+        print('effective hours per shift')   
+    try:
+       average_pay_load_effective.set(round((60/float(cycle_time.get()))*float(average_pay_load.get()),2))
+    except:
+        print('average pay load effective') 
+    try:
+       annual_shovel_production.set(round(float(effective_hours_per_year.get())*float(average_pay_load_effective.get()),1))
+    except:
+        print('annual shovel production') 
+    try:
+       day_shovel_production.set(round(float(annual_shovel_production.get())/float(days_per_year.get()),1))
+    except:
+        print('day_shovel_production')
+    try:
+       units_of_shovels_2016.set(math.ceil(float(production_2016.get())/float(annual_shovel_production.get())))
+    except:
+        print('units of shovels 2016')
+    try:
+       units_of_shovels_2017.set(math.ceil(float(production_2017.get())/float(annual_shovel_production.get())))
+    except:
+        print('units_of_shovels_2017')
 
 sFrames = []
 variables_shovel = []
@@ -390,23 +481,36 @@ for i, fields in enumerate(entries_shovel):
 outs_shovel = [
     [
         'Part 1', [
-            ['Volume (m3)', 'volumen1'],
-            ['Bench Height (m)', 'name_var2'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 0],
-        ],
-    ],
-    [
-        'Part 2', [
-            ['Space, (m)', 'name_var4'],
-            ['Hole depth, (m)', 'name_var5'],
-            ['Sub-drilling, %', 'name_var6'],
+            ['Swell bulk density (t/m3)', 'swell_bulk_density'],
+            ['Bucket capacity (t)', 'bucket_capacity'],
+            ['Average pay load (t)', 'average_pay_load'],
         ]
     ],
     [
-        'Output 3', [
-            ['otro ', 'name_var7'],
-            ['otro 2 s', 'name_var8']
+        'Part 2', [
+            ['Total cycle time (min)', 'total_cycle_time'],
+            ['Cycle time (min)', 'cycle_time'],
+        ]
+    ],
+    [
+        'Part 3', [
+            ['Days worked per month ', 'days_worked_per_month'],
+            ['Shift length (h)', 'shift_length'],
+            ['Planned maintenance (8h/week) ', 'planned_maintenance'],
+            ['Total delays (h)', 'total_delays'],
+            ['Balance of shift available (h) ', 'balance_of_shift_available'],
+            ['Effective hours per shift (h)', 'effective_hours_per_shift'],
+            ['Effective hours per year (h) ', 'effective_hours_per_year'],
+            ['Average pay load effective (t/h)', 'average_pay_load_effective'],
+            ['Annual Shovel production (t)', 'annual_shovel_production'],
+            ['Day shovel production (t)', 'day_shovel_production'],
+            
+        ]
+    ],
+    [
+        'Part 4', [
+            ['Mining equipment - Units of shovels 2016', 'units_of_shovels_2016'],
+            ['Mining equipment - Units of shovels 2017', 'units_of_shovels_2017'],
         ]
     ]
 ]
@@ -426,29 +530,40 @@ notebook.add(truck, text='Truck')
 
 entries_truck = [
     [
-        'Physical Development parameters', [
-            ['Bench Area (m)', 'bench_area2'],
-            ['Bench Height (m)', 'bench_height2'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 'name_var4'],
-            ['Space, (m)', 'name_var5'],
-            ['Hole depth, (m)', 'name_var6'],
-            ['Sub-drilling, %', 'name_var7'],
+        'a', [
+            ['a', 'a'],
+            ['a', 'fa'],
+
         ]
     ],
     [
-        'Production drill cycle time', [
-            ['Tramming speed, k/h', 'name_var8'],
-            ['Average distance between bench, km', 'name_var9'],
+        'a', [
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
         ]
     ],
     [
-        'Otros inputs', [
-            ['Input1', 'name_var10'],
-            ['Input2', 'name_var11'],
-            ['input 3', 'name_4']
+        'a', [
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
         ]
-    ]
+    ],
+    [
+        'PRODUCCIÓN MINA', [
+            ['a', 'a'],
+            ['a', 'a'],
+        ]
+    ],
 ]
 
 # Function for calc
@@ -458,10 +573,8 @@ def truck_calc(*args):
 
     # Write code here
     # Volume
-    try:
-        volumen2.set(round(float(bench_area2.get()) * float(bench_height2.get()), 2))
-    except:
-        print('Error on volume')
+    
+
 
 
 tFrames = []
@@ -505,24 +618,40 @@ for i, fields in enumerate(entries_truck):
 ### Outputs
 outs_truck = [
     [
-        'Part 1', [
-            ['Volume (m3)', 'volumen2'],
-            ['Bench Height (m)', 'name_var2'],
-            ['Rock density (m)', 'name_var3'],
-            ['Burden (m)', 0],
+        'a', [
+            ['a','a'],
+            ['a','a'],
         ],
     ],
     [
         'Part 2', [
-            ['Space, (m)', 'name_var4'],
-            ['Hole depth, (m)', 'name_var5'],
-            ['Sub-trucking, %', 'name_var6'],
+            ['a','a'],
+            ['a','a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            
         ]
     ],
     [
-        'Output 3', [
-            ['otro ', 'name_var7'],
-            ['otro 2 s', 'name_var8']
+        'Part 3', [
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+            ['a', 'a'],
+        ]
+    ],
+    [
+        'Part 4', [
+            ['a', 'a'],
+            ['a', 'a'],
         ]
     ]
 ]
